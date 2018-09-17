@@ -1,7 +1,7 @@
 package com.capgemini.friendmanagement.rest;
 
 import com.capgemini.friendmanagement.entity.Friend;
-import com.capgemini.friendmanagement.request.GenericFriendRequest;
+import com.capgemini.friendmanagement.request.GenericListOfFriendsRequest;
 import com.capgemini.friendmanagement.response.GenericFriendResponse;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,9 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +34,7 @@ public class FriendRestTest {
     @Test
     @Ignore
     public void addConnection() throws Exception {
-        GenericFriendRequest friendRequest = new GenericFriendRequest(
+        GenericListOfFriendsRequest friendRequest = new GenericListOfFriendsRequest(
                 Arrays.asList(new Friend("andy@example.com"), new Friend("john@example.com")));
 
         when(friendConnectionService.save(friendRequest)).thenReturn(new GenericFriendResponse(true));

@@ -2,8 +2,6 @@ package com.capgemini.friendmanagement.service;
 
 import com.capgemini.friendmanagement.dao.FriendDao;
 import com.capgemini.friendmanagement.entity.Friend;
-import com.capgemini.friendmanagement.entity.FriendConnection;
-import com.capgemini.friendmanagement.request.GenericFriendRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,5 +20,9 @@ public class FriendService {
 
     public void save(Friend friend) {
         friendDao.save(friend);
+    }
+
+    public Friend findByEmail(String email) {
+        return friendDao.findByEmail(email);
     }
 }

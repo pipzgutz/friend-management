@@ -4,13 +4,13 @@ import com.capgemini.friendmanagement.entity.Friend;
 
 import java.util.List;
 
-public class GenericFriendRequest {
+public class GenericListOfFriendsRequest {
     private List<Friend> friends;
 
-    public GenericFriendRequest() {
+    public GenericListOfFriendsRequest() {
     }
 
-    public GenericFriendRequest(List<Friend> friends) {
+    public GenericListOfFriendsRequest(List<Friend> friends) {
         this.friends = friends;
     }
 

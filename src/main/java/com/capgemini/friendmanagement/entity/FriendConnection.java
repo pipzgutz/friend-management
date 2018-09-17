@@ -10,13 +10,12 @@ public class FriendConnection implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "friend_connection_id")
     private Long id;
 
-    @OneToOne
-    private Friend friend1;
-
-    @OneToOne
-    private Friend friend2;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "friend_id")
+    private Friend friend;
 
     @Column(name = "subscribed")
     private boolean isSubscribed;
@@ -24,14 +23,12 @@ public class FriendConnection implements Serializable {
     public FriendConnection() {
     }
 
-    public FriendConnection(Friend friend1, Friend friend2) {
-        this.friend1 = friend1;
-        this.friend2 = friend2;
+    public FriendConnection(Friend friend) {
+        this.friend = friend;
     }
 
-    public FriendConnection(Friend friend1, Friend friend2, boolean isSubscribed) {
-        this.friend1 = friend1;
-        this.friend2 = friend2;
+    public FriendConnection(Friend friend, boolean isSubscribed) {
+        this.friend = friend;
         this.isSubscribed = isSubscribed;
     }
 
@@ -43,20 +40,12 @@ public class FriendConnection implements Serializable {
         this.id = id;
     }
 
-    public Friend getFriend1() {
-        return friend1;
+    public Friend getFriend() {
+        return friend;
     }
 
-    public void setFriend1(Friend friend1) {
-        this.friend1 = friend1;
-    }
-
-    public Friend getFriend2() {
-        return friend2;
-    }
-
-    public void setFriend2(Friend friend2) {
-        this.friend2 = friend2;
+    public void setFriend(Friend friend) {
+        this.friend = friend;
     }
 
     public boolean isSubscribed() {
