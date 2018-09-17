@@ -108,4 +108,21 @@ public class FriendConnectionService {
 
         return friendConnectionDao.save(friendConnection);
     }
+
+    public List<String> findAllEmailsWithUpdatesByEmail(String email, String text) {
+        List<String> emailsWithUpdates = new ArrayList<>();
+
+        // find all friend connections of email
+        List<FriendConnection> friendEmailNotBlocked = friendConnectionDao.findByFriendEmailNotBlocked(email);
+
+        // if has friend connections not blocked updates from email
+        if (CollectionUtils.isNotEmpty(friendEmailNotBlocked)) {
+            friendEmailNotBlocked.forEach(friendConnection -> {
+                Set<String> friendConnections = getFriendConnections(friendConnection.getFriend().getEmail());
+
+            });
+        }
+
+        return emailsWithUpdates;
+    }
 }

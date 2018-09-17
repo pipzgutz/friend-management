@@ -182,4 +182,9 @@ public class FriendConnectionServiceTest {
         assertThat(friendConnection).isNotNull();
         assertThat(friendConnection.isBlocked()).isFalse();
     }
+
+    @Test
+    public void findAllEmailsWithUpdatesByEmail() {
+
+    }
 }

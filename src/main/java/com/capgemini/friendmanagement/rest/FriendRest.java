@@ -1,6 +1,7 @@
 package com.capgemini.friendmanagement.rest;
 
 import com.capgemini.friendmanagement.request.EmailRequest;
+import com.capgemini.friendmanagement.request.EmailWithUpdatesRequest;
 import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
 import com.capgemini.friendmanagement.request.SubscriptionRequest;
 import com.capgemini.friendmanagement.response.FriendResponse;
@@ -90,6 +91,18 @@ public class FriendRest {
         friendConnectionService.unblockFriendConnection(
                 subscriptionRequest.getRequestor(), subscriptionRequest.getTarget());
         return okResponse();
+    }
+
+    @PostMapping("friend-list-with-updates")
+    public ResponseEntity<FriendResponse> findAllEmailsWithUpdatesByEmail(@RequestBody EmailWithUpdatesRequest emailWithUpdatesRequest) {
+        List<String> allEmailsWithUpdates = friendConnectionService.findAllEmailsWithUpdatesByEmail(
+                emailWithUpdatesRequest.getEmail(), emailWithUpdatesRequest.getText());
+        return new ResponseEntity<>(
+                FriendResponseBuilder.aFriendResponse()
+                        .withIsSuccess(true)
+                        .withFriends(allEmailsWithUpdates)
+                        .build(),
+                HttpStatus.OK);
     }
 
     private ResponseEntity<FriendResponse> okResponse() {

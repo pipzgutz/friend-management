@@ -13,7 +13,11 @@ public interface FriendConnectionDao extends CrudRepository<FriendConnection, Lo
     @Query("SELECT fc FROM FriendConnection fc INNER JOIN fc.friend f WHERE f.email = :email")
     List<FriendConnection> findByFriendEmail(@Param("email") String email);
 
+    @Query("SELECT fc FROM FriendConnection fc INNER JOIN fc.friend f WHERE f.email = :email AND fc.isBlocked = false")
+    List<FriendConnection> findByFriendEmailNotBlocked(@Param("email") String email);
+
     @Query("SELECT fc FROM FriendConnection fc INNER JOIN fc.friend f WHERE f.email = :friend1Email AND fc.friendConnectedTo.email = :friend2Email")
     FriendConnection findByFriendAndOtherFriendEmail(@Param("friend1Email") String friend1Email,
                                                      @Param("friend2Email") String friend2Email);
+
 }
