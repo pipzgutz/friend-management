@@ -101,13 +101,11 @@ public class FriendConnectionServiceTest {
         FriendConnection friendConnection2_3 = new FriendConnection(friend2, friend3);
         FriendConnection friendConnection2_4 = new FriendConnection(friend2, friend4);
 
-        List<FriendConnection> friendConnections1 = Arrays.asList(friendConnection1, friendConnection2,
-                friendConnection1_3, friendConnection1_4);
-        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections1);
+        List<FriendConnection> friendConnectionsList1 = Arrays.asList(friendConnection1_3, friendConnection1_4);
+        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnectionsList1);
 
-        List<FriendConnection> friendConnections2 = Arrays.asList(friendConnection1, friendConnection2,
-                friendConnection2_3, friendConnection2_4);
-        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections2);
+        List<FriendConnection> friendConnectionsList2 = Arrays.asList(friendConnection2_3, friendConnection2_4);
+        when(friendConnectionDao.findByFriendEmail(friend2Email)).thenReturn(friendConnectionsList2);
 
         List<String> commonFriends = friendConnectionService.getCommonFriends(Arrays.asList(friend1, friend2));
 

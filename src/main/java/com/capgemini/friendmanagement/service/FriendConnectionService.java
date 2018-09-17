@@ -3,7 +3,7 @@ package com.capgemini.friendmanagement.service;
 import com.capgemini.friendmanagement.dao.FriendConnectionDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.entity.FriendConnection;
-import com.capgemini.friendmanagement.response.FriendResponse;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -51,22 +51,19 @@ public class FriendConnectionService {
         Friend friend1 = getFriendOrCreateNew(friends.get(0));
         Friend friend2 = getFriendOrCreateNew(friends.get(1));
 
-        Set<String> emails = new HashSet<>();
+        Set<String> friendConnections1 = getFriendConnections(friend1.getEmail());
+        Set<String> friendConnections2 = getFriendConnections(friend2.getEmail());
 
-        addCommonFriendsToSet(friend1, emails);
-        addCommonFriendsToSet(friend2, emails);
+        Collection<String> commonFriends = CollectionUtils.intersection(friendConnections1, friendConnections2);
 
-        emails.remove(friend1.getEmail());
-        emails.remove(friend2.getEmail());
-
-        return new ArrayList<>(emails);
+        return new ArrayList<>(commonFriends);
     }
 
-    private void addCommonFriendsToSet(Friend friend, Set<String> emails) {
-        List<FriendConnection> friendConnections1 = friendConnectionDao.findByFriendEmail(friend.getEmail());
-        emails.addAll(friendConnections1.stream()
+    private Set<String> getFriendConnections(String email) {
+        List<FriendConnection> friendConnections1 = friendConnectionDao.findByFriendEmail(email);
+        return friendConnections1.stream()
                 .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
-                .collect(Collectors.toSet()));
+                .collect(Collectors.toSet());
     }
 
     private Friend getFriendOrCreateNew(Friend friend) {
