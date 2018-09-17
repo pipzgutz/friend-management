@@ -2,6 +2,7 @@ package com.capgemini.friendmanagement.rest;
 
 import com.capgemini.friendmanagement.request.EmailRequest;
 import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
+import com.capgemini.friendmanagement.request.SubscriptionRequest;
 import com.capgemini.friendmanagement.response.FriendResponse;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.capgemini.friendmanagement.service.FriendService;
@@ -33,5 +34,17 @@ public class FriendRest {
     @PutMapping("add-connection")
     public ResponseEntity<FriendResponse> addConnection(@RequestBody ListOfFriendsRequest friendRequest) {
         return new ResponseEntity<>(friendConnectionService.save(friendRequest.getFriends()), HttpStatus.OK);
+    }
+
+    @PostMapping("subscribe")
+    public ResponseEntity<FriendResponse> subscribe(@RequestBody SubscriptionRequest subscriptionRequest) {
+        return new ResponseEntity<>(friendConnectionService.subscribeToFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
+    }
+
+    @PostMapping("unsubscribe")
+    public ResponseEntity<FriendResponse> unsubscribe(@RequestBody SubscriptionRequest subscriptionRequest) {
+        return new ResponseEntity<>(friendConnectionService.unsubscribeToFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
     }
 }

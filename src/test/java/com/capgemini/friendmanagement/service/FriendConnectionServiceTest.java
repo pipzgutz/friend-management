@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -131,12 +130,9 @@ public class FriendConnectionServiceTest {
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
 
-        FriendConnection friendConnection = friendConnectionService.subscribeToFriendConnection(friend1, friend2);
+        FriendResponse friendResponse = friendConnectionService.subscribeToFriendConnection(friend1Email, friend2Email);
 
-        assertThat(friendConnection).isNotNull();
-        assertThat(friendConnection.getFriend()).isEqualTo(friend1);
-        assertThat(friendConnection.getFriendConnectedTo()).isEqualTo(friend2);
-        assertThat(friendConnection.isSubscribed()).isTrue();
+        assertThat(friendResponse.isSuccess()).isTrue();
     }
 
     @Test
@@ -147,11 +143,8 @@ public class FriendConnectionServiceTest {
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1UnSubscribed);
 
-        FriendConnection friendConnection = friendConnectionService.unSubscribeToFriendConnection(friend1, friend2);
+        FriendResponse friendResponse = friendConnectionService.unsubscribeToFriendConnection(friend1Email, friend2Email);
 
-        assertThat(friendConnection).isNotNull();
-        assertThat(friendConnection.getFriend()).isEqualTo(friend1);
-        assertThat(friendConnection.getFriendConnectedTo()).isEqualTo(friend2);
-        assertThat(friendConnection.isSubscribed()).isFalse();
+        assertThat(friendResponse.isSuccess()).isTrue();
     }
 }

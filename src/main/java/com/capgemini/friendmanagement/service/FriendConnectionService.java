@@ -89,17 +89,28 @@ public class FriendConnectionService {
         return new FriendResponse(false, null, null, null);
     }
 
-    public FriendConnection subscribeToFriendConnection(Friend friend1, Friend friend2) {
-        return subscribeUnsubscribe(friend1, friend2, true);
+    public FriendResponse subscribeToFriendConnection(String friend1Email, String friend2Email) {
+        FriendConnection friendConnection = subscribeUnsubscribe(friend1Email, friend2Email, true);
+
+        if (friendConnection != null) {
+            return new FriendResponse(true);
+        }
+
+        return emptyFriendResponse();
     }
 
-    public FriendConnection unSubscribeToFriendConnection(Friend friend1, Friend friend2) {
-        return subscribeUnsubscribe(friend1, friend2, false);
+    public FriendResponse unsubscribeToFriendConnection(String friend1Email, String friend2Email) {
+        FriendConnection friendConnection = subscribeUnsubscribe(friend1Email, friend2Email, false);
+
+        if (friendConnection != null) {
+            return new FriendResponse(true);
+        }
+
+        return emptyFriendResponse();
     }
 
-    private FriendConnection subscribeUnsubscribe(Friend friend1, Friend friend2, boolean isSubscribed) {
-        FriendConnection friendConnection = friendConnectionDao.findByFriendAndOtherFriendEmail(
-                friend1.getEmail(), friend2.getEmail());
+    private FriendConnection subscribeUnsubscribe(String friend1, String friend2, boolean isSubscribed) {
+        FriendConnection friendConnection = friendConnectionDao.findByFriendAndOtherFriendEmail(friend1, friend2);
 
         friendConnection.setSubscribed(isSubscribed);
 
