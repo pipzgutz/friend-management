@@ -3,6 +3,7 @@ package com.capgemini.friendmanagement.service;
 import com.capgemini.friendmanagement.dao.FriendConnectionDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.entity.FriendConnection;
+import com.capgemini.friendmanagement.entity.builder.FriendConnectionBuilder;
 import com.capgemini.friendmanagement.response.FriendResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,7 +126,11 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void subscribeToFriendConnection() {
-        FriendConnection friendConnection1Subscribed = new FriendConnection(friend1, friend2, true);
+        FriendConnection friendConnection1Subscribed = FriendConnectionBuilder.aFriendConnection()
+                .withFriend(friend1)
+                .withFriendConnectedTo(friend2)
+                .withIsSubscribed(true)
+                .build();
 
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
@@ -138,12 +143,48 @@ public class FriendConnectionServiceTest {
     @Test
     public void unSubscribeToFriendConnection() {
         friendConnection1.setSubscribed(true);
-        FriendConnection friendConnection1UnSubscribed = new FriendConnection(friend1, friend2, false);
+        FriendConnection friendConnection1UnSubscribed = FriendConnectionBuilder.aFriendConnection()
+                .withFriend(friend1)
+                .withFriendConnectedTo(friend2)
+                .withIsSubscribed(false)
+                .build();
 
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1UnSubscribed);
 
         FriendResponse friendResponse = friendConnectionService.unsubscribeToFriendConnection(friend1Email, friend2Email);
+
+        assertThat(friendResponse.isSuccess()).isTrue();
+    }
+
+    @Test
+    public void blockFriendConnection() {
+        FriendConnection friendConnection1Subscribed = FriendConnectionBuilder.aFriendConnection()
+                .withFriend(friend1)
+                .withFriendConnectedTo(friend2)
+                .withIsBlocked(true)
+                .build();
+
+        when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
+        when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
+
+        FriendResponse friendResponse = friendConnectionService.blockFriendConnection(friend1Email, friend2Email);
+
+        assertThat(friendResponse.isSuccess()).isTrue();
+    }
+
+    @Test
+    public void unblockFriendConnection() {
+        FriendConnection friendConnection1Subscribed = FriendConnectionBuilder.aFriendConnection()
+                .withFriend(friend1)
+                .withFriendConnectedTo(friend2)
+                .withIsBlocked(false)
+                .build();
+
+        when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
+        when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
+
+        FriendResponse friendResponse = friendConnectionService.unblockFriendConnection(friend1Email, friend2Email);
 
         assertThat(friendResponse.isSuccess()).isTrue();
     }

@@ -8,7 +8,10 @@ import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.capgemini.friendmanagement.service.FriendService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/friend")
@@ -31,7 +34,7 @@ public class FriendRest {
         return new ResponseEntity<>(friendConnectionService.getCommonFriends(friendsRequest.getFriends()), HttpStatus.OK);
     }
 
-    @PutMapping("add-connection")
+    @PostMapping("add-connection")
     public ResponseEntity<FriendResponse> addConnection(@RequestBody ListOfFriendsRequest friendRequest) {
         return new ResponseEntity<>(friendConnectionService.save(friendRequest.getFriends()), HttpStatus.OK);
     }
@@ -45,6 +48,18 @@ public class FriendRest {
     @PostMapping("unsubscribe")
     public ResponseEntity<FriendResponse> unsubscribe(@RequestBody SubscriptionRequest subscriptionRequest) {
         return new ResponseEntity<>(friendConnectionService.unsubscribeToFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
+    }
+
+    @PostMapping("block")
+    public ResponseEntity<FriendResponse> block(@RequestBody SubscriptionRequest subscriptionRequest) {
+        return new ResponseEntity<>(friendConnectionService.blockFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
+    }
+
+    @PostMapping("unblock")
+    public ResponseEntity<FriendResponse> unblock(@RequestBody SubscriptionRequest subscriptionRequest) {
+        return new ResponseEntity<>(friendConnectionService.unblockFriendConnection(
                 subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -39,7 +39,7 @@ public class FriendRestTest {
 
         when(friendConnectionService.save(friendRequest.getFriends())).thenReturn(new FriendResponse(true));
 
-        mockMvc.perform(put("/friend/add-connection")
+        mockMvc.perform(post("/friend/add-connection")
         .content(objectMapper.writeValueAsString(friendRequest)))
                 .andExpect(status().isOk());
     }

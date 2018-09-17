@@ -109,10 +109,38 @@ public class FriendConnectionService {
         return emptyFriendResponse();
     }
 
-    private FriendConnection subscribeUnsubscribe(String friend1, String friend2, boolean isSubscribed) {
-        FriendConnection friendConnection = friendConnectionDao.findByFriendAndOtherFriendEmail(friend1, friend2);
+    private FriendConnection subscribeUnsubscribe(String friend1Email, String friend2Email, boolean isSubscribed) {
+        FriendConnection friendConnection = friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email);
 
         friendConnection.setSubscribed(isSubscribed);
+
+        return friendConnectionDao.save(friendConnection);
+    }
+
+    public FriendResponse blockFriendConnection(String friend1Email, String friend2Email) {
+        FriendConnection friendConnection = blockUnblock(friend1Email, friend2Email, true);
+
+        if (friendConnection != null) {
+            return new FriendResponse(true);
+        }
+
+        return emptyFriendResponse();
+    }
+
+    public FriendResponse unblockFriendConnection(String friend1Email, String friend2Email) {
+        FriendConnection friendConnection = blockUnblock(friend1Email, friend2Email, false);
+
+        if (friendConnection != null) {
+            return new FriendResponse(true);
+        }
+
+        return emptyFriendResponse();
+    }
+
+    private FriendConnection blockUnblock(String friend1Email, String friend2Email, boolean isBlocked) {
+        FriendConnection friendConnection = friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email);
+
+        friendConnection.setBlocked(isBlocked);
 
         return friendConnectionDao.save(friendConnection);
     }
