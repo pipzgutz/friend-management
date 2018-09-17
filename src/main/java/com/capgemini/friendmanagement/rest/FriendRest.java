@@ -1,6 +1,7 @@
 package com.capgemini.friendmanagement.rest;
 
 import com.capgemini.friendmanagement.entity.Friend;
+import com.capgemini.friendmanagement.request.GenericFriendRequest;
 import com.capgemini.friendmanagement.response.GenericFriendResponse;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,7 +21,7 @@ public class FriendRest {
     }
 
     @PutMapping(value = "add-connection")
-    public GenericFriendResponse addConnection(@RequestBody List<Friend> friends) {
-        return friendConnectionService.save(friends);
+    public GenericFriendResponse addConnection(@RequestBody GenericFriendRequest friendRequest) {
+        return friendConnectionService.save(friendRequest);
     }
 }
