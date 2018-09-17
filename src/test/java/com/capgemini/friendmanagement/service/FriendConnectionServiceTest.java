@@ -3,8 +3,6 @@ package com.capgemini.friendmanagement.service;
 import com.capgemini.friendmanagement.dao.FriendConnectionDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.entity.FriendConnection;
-import com.capgemini.friendmanagement.request.EmailRequest;
-import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
 import com.capgemini.friendmanagement.response.FriendResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +37,7 @@ public class FriendConnectionServiceTest {
     private Friend friend2;
     private FriendConnection friendConnection1;
     private FriendConnection friendConnection2;
-    private EmailRequest emailRequest;
+    private String friend1Email;
 
     @Before
     public void setUp() {
@@ -50,19 +48,19 @@ public class FriendConnectionServiceTest {
         friendConnection1 = new FriendConnection(friend1, friend2);
         friendConnection2 = new FriendConnection(friend2, friend1);
 
-        emailRequest = new EmailRequest(friend1.getEmail());
+        friend1Email = friend1.getEmail();
     }
 
     @Test
     public void save() {
-        ListOfFriendsRequest friendRequest = new ListOfFriendsRequest(Arrays.asList(friend1, friend2));
+        List<Friend> friends = Arrays.asList(friend1, friend2);
 
-        doNothing().when(friendService).saveAll(friendRequest.getFriends());
+        doNothing().when(friendService).saveAll(friends);
 
         List<FriendConnection> friendConnections = Arrays.asList(friendConnection1, friendConnection2);
         when(friendConnectionDao.save(friendConnections)).thenReturn(friendConnections);
 
-        FriendResponse response = friendConnectionService.save(friendRequest);
+        FriendResponse response = friendConnectionService.save(friends);
 
         assertThat(response.isSuccess()).isTrue();
     }
@@ -71,9 +69,9 @@ public class FriendConnectionServiceTest {
     public void findByFriendEmail() {
         List<FriendConnection> friendConnections = Collections.singletonList(new FriendConnection(friend1, friend2));
 
-        when(friendConnectionDao.findByFriendEmail(emailRequest.getEmail())).thenReturn(friendConnections);
+        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections);
 
-        FriendResponse friendResponse = friendConnectionService.getFriendsList(emailRequest);
+        FriendResponse friendResponse = friendConnectionService.getFriendsList(friend1Email);
 
         List<String> friendConnectedToEmails = friendConnections.stream()
                 .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
@@ -87,9 +85,9 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void findByFriendEmail_Not_Exists() {
-        when(friendConnectionDao.findByFriendEmail(emailRequest.getEmail())).thenReturn(null);
+        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(null);
 
-        FriendResponse friendResponse = friendConnectionService.getFriendsList(emailRequest);
+        FriendResponse friendResponse = friendConnectionService.getFriendsList(friend1Email);
 
         assertThat(friendResponse).isNotNull();
         assertThat(friendResponse.isSuccess()).isFalse();

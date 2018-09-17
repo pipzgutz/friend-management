@@ -3,11 +3,9 @@ package com.capgemini.friendmanagement.service;
 import com.capgemini.friendmanagement.dao.FriendConnectionDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.entity.FriendConnection;
-import com.capgemini.friendmanagement.request.EmailRequest;
 import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
 import com.capgemini.friendmanagement.response.FriendResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.ValidationUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +21,7 @@ public class FriendConnectionService {
         this.friendConnectionDao = friendConnectionDao;
     }
 
-    public FriendResponse save(ListOfFriendsRequest friendRequest) {
-        List<Friend> friends = friendRequest.getFriends();
-
+    public FriendResponse save(List<Friend> friends) {
         Friend friend1 = friends.get(0);
         Friend friend2 = friends.get(1);
 
@@ -38,8 +34,8 @@ public class FriendConnectionService {
         return new FriendResponse(true);
     }
 
-    public FriendResponse getFriendsList(EmailRequest emailRequest) {
-        List<FriendConnection> friendConnections = friendConnectionDao.findByFriendEmail(emailRequest.getEmail());
+    public FriendResponse getFriendsList(String email) {
+        List<FriendConnection> friendConnections = friendConnectionDao.findByFriendEmail(email);
 
         if (friendConnections != null && !friendConnections.isEmpty()) {
             List<String> friendList = friendConnections.stream()

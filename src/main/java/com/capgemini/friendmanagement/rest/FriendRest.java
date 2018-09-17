@@ -22,11 +22,11 @@ public class FriendRest {
 
     @PostMapping("friends-list")
     public ResponseEntity<FriendResponse> getFriendsList(@RequestBody EmailRequest emailRequest) {
-        return new ResponseEntity<>(friendConnectionService.getFriendsList(emailRequest), HttpStatus.OK);
+        return new ResponseEntity<>(friendConnectionService.getFriendsList(emailRequest.getEmail()), HttpStatus.OK);
     }
 
     @PutMapping("add-connection")
     public ResponseEntity<FriendResponse> addConnection(@RequestBody ListOfFriendsRequest friendRequest) {
-        return new ResponseEntity<>(friendConnectionService.save(friendRequest), HttpStatus.OK);
+        return new ResponseEntity<>(friendConnectionService.save(friendRequest.getFriends()), HttpStatus.OK);
     }
 }

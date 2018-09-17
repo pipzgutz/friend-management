@@ -37,7 +37,7 @@ public class FriendRestTest {
         ListOfFriendsRequest friendRequest = new ListOfFriendsRequest(
                 Arrays.asList(new Friend("andy@example.com"), new Friend("john@example.com")));
 
-        when(friendConnectionService.save(friendRequest)).thenReturn(new FriendResponse(true));
+        when(friendConnectionService.save(friendRequest.getFriends())).thenReturn(new FriendResponse(true));
 
         mockMvc.perform(put("/friend/add-connection")
         .content(objectMapper.writeValueAsString(friendRequest)))
