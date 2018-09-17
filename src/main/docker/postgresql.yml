@@ -1,0 +1,11 @@
+version: '2'
+services:
+    friendmanagement-postgresql:
+        image: postgres:9.6.5
+        # volumes:
+        #     - ~/volumes/friend-management/postgresql/:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=FriendManagement
+            - POSTGRES_PASSWORD=password
+        ports:
+            - 5432:5432
