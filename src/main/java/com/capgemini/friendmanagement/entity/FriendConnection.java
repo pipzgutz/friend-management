@@ -28,6 +28,9 @@ public class FriendConnection implements Serializable {
     @Column(name = "subscribed")
     private boolean isSubscribed;
 
+    @Column(name = "blocked")
+    private boolean isBlocked;
+
     public FriendConnection() {
     }
 
@@ -40,6 +43,13 @@ public class FriendConnection implements Serializable {
         this.friend = friend;
         this.friendConnectedTo = friendConnectedTo;
         this.isSubscribed = isSubscribed;
+    }
+
+    public FriendConnection(Friend friend, Friend friendConnectedTo, boolean isSubscribed, boolean isBlocked) {
+        this.friend = friend;
+        this.friendConnectedTo = friendConnectedTo;
+        this.isSubscribed = isSubscribed;
+        this.isBlocked = isBlocked;
     }
 
     public Long getId() {
@@ -74,12 +84,21 @@ public class FriendConnection implements Serializable {
         isSubscribed = subscribed;
     }
 
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FriendConnection that = (FriendConnection) o;
         return isSubscribed == that.isSubscribed &&
+                isBlocked == that.isBlocked &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(friend, that.friend) &&
                 Objects.equals(friendConnectedTo, that.friendConnectedTo);
@@ -87,6 +106,6 @@ public class FriendConnection implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, friend, friendConnectedTo, isSubscribed);
+        return Objects.hash(id, friend, friendConnectedTo, isSubscribed, isBlocked);
     }
 }

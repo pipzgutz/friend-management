@@ -38,6 +38,7 @@ public class FriendConnectionServiceTest {
     private FriendConnection friendConnection1;
     private FriendConnection friendConnection2;
     private String friend1Email;
+    private String friend2Email;
 
     @Before
     public void setUp() {
@@ -49,6 +50,7 @@ public class FriendConnectionServiceTest {
         friendConnection2 = new FriendConnection(friend2, friend1);
 
         friend1Email = friend1.getEmail();
+        friend2Email = friend2.getEmail();
     }
 
     @Test
@@ -84,7 +86,7 @@ public class FriendConnectionServiceTest {
     }
 
     @Test
-    public void getFriendsList_Email_Null() {
+    public void getFriendsList_Email_NullOrNotExists() {
         when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(null);
 
         FriendResponse friendResponse = friendConnectionService.getFriendsList(friend1Email);
@@ -120,5 +122,36 @@ public class FriendConnectionServiceTest {
         assertThat(friendResponse.isSuccess()).isTrue();
         assertThat(friendResponse.getFriends()).contains(friend3.getEmail(), friend4.getEmail());
         assertThat(friendResponse.getCount()).isEqualTo("2");
+    }
+
+    @Test
+    public void subscribeToFriendConnection() {
+        FriendConnection friendConnection1Subscribed = new FriendConnection(friend1, friend2, true);
+
+        when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
+        when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
+
+        FriendConnection friendConnection = friendConnectionService.subscribeToFriendConnection(friend1, friend2);
+
+        assertThat(friendConnection).isNotNull();
+        assertThat(friendConnection.getFriend()).isEqualTo(friend1);
+        assertThat(friendConnection.getFriendConnectedTo()).isEqualTo(friend2);
+        assertThat(friendConnection.isSubscribed()).isTrue();
+    }
+
+    @Test
+    public void unSubscribeToFriendConnection() {
+        friendConnection1.setSubscribed(true);
+        FriendConnection friendConnection1UnSubscribed = new FriendConnection(friend1, friend2, false);
+
+        when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
+        when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1UnSubscribed);
+
+        FriendConnection friendConnection = friendConnectionService.unSubscribeToFriendConnection(friend1, friend2);
+
+        assertThat(friendConnection).isNotNull();
+        assertThat(friendConnection.getFriend()).isEqualTo(friend1);
+        assertThat(friendConnection.getFriendConnectedTo()).isEqualTo(friend2);
+        assertThat(friendConnection.isSubscribed()).isFalse();
     }
 }

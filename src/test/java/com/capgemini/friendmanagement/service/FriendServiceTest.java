@@ -69,7 +69,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    public void findByEmail_Null() {
+    public void findByEmail_NullOrNotExists() {
         when(friendDao.findByEmail(email)).thenReturn(null);
 
         Friend searchFriend = friendService.findByEmail(email);

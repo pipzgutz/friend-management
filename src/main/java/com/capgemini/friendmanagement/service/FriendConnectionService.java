@@ -6,10 +6,12 @@ import com.capgemini.friendmanagement.entity.FriendConnection;
 import com.capgemini.friendmanagement.response.FriendResponse;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FriendConnectionService {
     private final FriendService friendService;
     private final FriendConnectionDao friendConnectionDao;
@@ -85,5 +87,22 @@ public class FriendConnectionService {
 
     private FriendResponse emptyFriendResponse() {
         return new FriendResponse(false, null, null, null);
+    }
+
+    public FriendConnection subscribeToFriendConnection(Friend friend1, Friend friend2) {
+        return subscribeUnsubscribe(friend1, friend2, true);
+    }
+
+    public FriendConnection unSubscribeToFriendConnection(Friend friend1, Friend friend2) {
+        return subscribeUnsubscribe(friend1, friend2, false);
+    }
+
+    private FriendConnection subscribeUnsubscribe(Friend friend1, Friend friend2, boolean isSubscribed) {
+        FriendConnection friendConnection = friendConnectionDao.findByFriendAndOtherFriendEmail(
+                friend1.getEmail(), friend2.getEmail());
+
+        friendConnection.setSubscribed(isSubscribed);
+
+        return friendConnectionDao.save(friendConnection);
     }
 }

@@ -4,10 +4,12 @@ import com.capgemini.friendmanagement.dao.FriendDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class FriendService {
     private final FriendDao friendDao;
 
