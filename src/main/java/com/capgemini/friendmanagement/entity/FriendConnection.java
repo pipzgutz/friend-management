@@ -17,18 +17,24 @@ public class FriendConnection implements Serializable {
     @JoinColumn(name = "friend_id")
     private Friend friend;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "friend_connected_to_id")
+    private Friend friendConnectedTo;
+
     @Column(name = "subscribed")
     private boolean isSubscribed;
 
     public FriendConnection() {
     }
 
-    public FriendConnection(Friend friend) {
+    public FriendConnection(Friend friend, Friend friendConnectedTo) {
         this.friend = friend;
+        this.friendConnectedTo = friendConnectedTo;
     }
 
-    public FriendConnection(Friend friend, boolean isSubscribed) {
+    public FriendConnection(Friend friend, Friend friendConnectedTo, boolean isSubscribed) {
         this.friend = friend;
+        this.friendConnectedTo = friendConnectedTo;
         this.isSubscribed = isSubscribed;
     }
 
@@ -46,6 +52,14 @@ public class FriendConnection implements Serializable {
 
     public void setFriend(Friend friend) {
         this.friend = friend;
+    }
+
+    public Friend getFriendConnectedTo() {
+        return friendConnectedTo;
+    }
+
+    public void setFriendConnectedTo(Friend friendConnectedTo) {
+        this.friendConnectedTo = friendConnectedTo;
     }
 
     public boolean isSubscribed() {

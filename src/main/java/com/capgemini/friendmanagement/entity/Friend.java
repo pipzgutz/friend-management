@@ -2,7 +2,6 @@ package com.capgemini.friendmanagement.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 public class Friend implements Serializable {
@@ -15,20 +14,11 @@ public class Friend implements Serializable {
 
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "friend_connection_id")
-    private List<FriendConnection> friendConnections;
-
     public Friend() {
     }
 
     public Friend(String email) {
         this.email = email;
-    }
-
-    public Friend(String email, List<FriendConnection> friendConnections) {
-        this.email = email;
-        this.friendConnections = friendConnections;
     }
 
     public Long getId() {
@@ -45,13 +35,5 @@ public class Friend implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public List<FriendConnection> getFriendConnections() {
-        return friendConnections;
-    }
-
-    public void setFriendConnections(List<FriendConnection> friendConnections) {
-        this.friendConnections = friendConnections;
     }
 }

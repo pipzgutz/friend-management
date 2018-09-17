@@ -18,7 +18,7 @@ public class FriendRest {
         this.friendConnectionService = friendConnectionService;
     }
 
-    @GetMapping("friends-list")
+    @PostMapping("friends-list")
     public GenericFriendResponse getFriendsList(@RequestBody GenericEmailRequest emailRequest) {
         return friendConnectionService.getFriendsList(emailRequest);
     }

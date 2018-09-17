@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FriendConnectionService {
@@ -27,8 +28,8 @@ public class FriendConnectionService {
         Friend friend1 = friends.get(0);
         Friend friend2 = friends.get(1);
 
-        FriendConnection friendConnection1 = new FriendConnection(friend1);
-        FriendConnection friendConnection2 = new FriendConnection(friend2);
+        FriendConnection friendConnection1 = new FriendConnection(friend1, friend2);
+        FriendConnection friendConnection2 = new FriendConnection(friend2, friend1);
 
         // save the friend connections
         friendConnectionDao.save(Arrays.asList(friendConnection1, friendConnection2));
@@ -37,6 +38,15 @@ public class FriendConnectionService {
     }
 
     public GenericFriendResponse getFriendsList(GenericEmailRequest emailRequest) {
-        return null;
+        List<FriendConnection> friendConnections = friendConnectionDao.findByFriendEmail(emailRequest.getEmail());
+
+        if (friendConnections != null && !friendConnections.isEmpty()) {
+            List<String> friendList = friendConnections.stream()
+                    .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
+                    .collect(Collectors.toList());
+            return new GenericFriendResponse(true, null, friendList, friendList.size() + "");
+        } else {
+            return new GenericFriendResponse(false, null, null, null);
+        }
     }
 }
