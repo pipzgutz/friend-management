@@ -13,7 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
@@ -33,20 +33,19 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void save() {
-
         // create the friends
         Friend friend1 = new Friend("andy@example.com");
         Friend friend2 = new Friend("john@example.com");
 
-        // set the friend connections
-        friend1.setFriendConnections(Collections.singletonList(new FriendConnection(friend2)));
-        friend2.setFriendConnections(Collections.singletonList(new FriendConnection(friend1)));
+        FriendConnection friendConnection1 = new FriendConnection(friend1);
+        FriendConnection friendConnection2 = new FriendConnection(friend2);
 
         GenericListOfFriendsRequest friendRequest = new GenericListOfFriendsRequest(Arrays.asList(friend1, friend2));
 
         doNothing().when(friendService).saveAll(friendRequest.getFriends());
 
-        //when(friendConnectionDao.save(friendConnection)).thenReturn(friendConnection);
+        List<FriendConnection> friendConnections = Arrays.asList(friendConnection1, friendConnection2);
+        when(friendConnectionDao.save(friendConnections)).thenReturn(friendConnections);
 
         GenericFriendResponse response = friendConnectionService.save(friendRequest);
 
