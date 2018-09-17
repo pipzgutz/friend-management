@@ -1,6 +1,9 @@
 package com.capgemini.friendmanagement.entity;
 
+import org.hibernate.validator.constraints.Email;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -12,6 +15,8 @@ public class Friend implements Serializable {
     @Column(name = "friend_id")
     private Long id;
 
+    @NotNull
+    @Email
     private String email;
 
     public Friend() {

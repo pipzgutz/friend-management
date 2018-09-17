@@ -1,6 +1,7 @@
 package com.capgemini.friendmanagement.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -15,10 +16,12 @@ public class FriendConnection implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "friend_id")
+    @NotNull
     private Friend friend;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "friend_connected_to_id")
+    @NotNull
     private Friend friendConnectedTo;
 
     @Column(name = "subscribed")

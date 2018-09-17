@@ -1,8 +1,8 @@
 package com.capgemini.friendmanagement.rest;
 
 import com.capgemini.friendmanagement.entity.Friend;
-import com.capgemini.friendmanagement.request.GenericListOfFriendsRequest;
-import com.capgemini.friendmanagement.response.GenericFriendResponse;
+import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
+import com.capgemini.friendmanagement.response.FriendResponse;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Ignore;
@@ -34,10 +34,10 @@ public class FriendRestTest {
     @Test
     @Ignore
     public void addConnection() throws Exception {
-        GenericListOfFriendsRequest friendRequest = new GenericListOfFriendsRequest(
+        ListOfFriendsRequest friendRequest = new ListOfFriendsRequest(
                 Arrays.asList(new Friend("andy@example.com"), new Friend("john@example.com")));
 
-        when(friendConnectionService.save(friendRequest)).thenReturn(new GenericFriendResponse(true));
+        when(friendConnectionService.save(friendRequest)).thenReturn(new FriendResponse(true));
 
         mockMvc.perform(put("/friend/add-connection")
         .content(objectMapper.writeValueAsString(friendRequest)))

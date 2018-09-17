@@ -3,10 +3,11 @@ package com.capgemini.friendmanagement.service;
 import com.capgemini.friendmanagement.dao.FriendConnectionDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.entity.FriendConnection;
-import com.capgemini.friendmanagement.request.GenericEmailRequest;
-import com.capgemini.friendmanagement.request.GenericListOfFriendsRequest;
-import com.capgemini.friendmanagement.response.GenericFriendResponse;
+import com.capgemini.friendmanagement.request.EmailRequest;
+import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
+import com.capgemini.friendmanagement.response.FriendResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.ValidationUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ public class FriendConnectionService {
         this.friendConnectionDao = friendConnectionDao;
     }
 
-    public GenericFriendResponse save(GenericListOfFriendsRequest friendRequest) {
+    public FriendResponse save(ListOfFriendsRequest friendRequest) {
         List<Friend> friends = friendRequest.getFriends();
 
         Friend friend1 = friends.get(0);
@@ -34,19 +35,19 @@ public class FriendConnectionService {
         // save the friend connections
         friendConnectionDao.save(Arrays.asList(friendConnection1, friendConnection2));
 
-        return new GenericFriendResponse(true);
+        return new FriendResponse(true);
     }
 
-    public GenericFriendResponse getFriendsList(GenericEmailRequest emailRequest) {
+    public FriendResponse getFriendsList(EmailRequest emailRequest) {
         List<FriendConnection> friendConnections = friendConnectionDao.findByFriendEmail(emailRequest.getEmail());
 
         if (friendConnections != null && !friendConnections.isEmpty()) {
             List<String> friendList = friendConnections.stream()
                     .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
                     .collect(Collectors.toList());
-            return new GenericFriendResponse(true, null, friendList, friendList.size() + "");
+            return new FriendResponse(true, null, friendList, friendList.size() + "");
         } else {
-            return new GenericFriendResponse(false, null, null, null);
+            return new FriendResponse(false, null, null, null);
         }
     }
 }

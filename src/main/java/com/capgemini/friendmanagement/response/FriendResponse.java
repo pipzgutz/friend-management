@@ -2,23 +2,23 @@ package com.capgemini.friendmanagement.response;
 
 import java.util.List;
 
-public class GenericFriendResponse {
+public class FriendResponse {
     private boolean isSuccess;
     private List<String> recipients;
-    private List<String> friendEmails;
+    private List<String> friends;
     private String count;
 
-    public GenericFriendResponse() {
+    public FriendResponse() {
     }
 
-    public GenericFriendResponse(boolean isSuccess) {
+    public FriendResponse(boolean isSuccess) {
         this.isSuccess = isSuccess;
     }
 
-    public GenericFriendResponse(boolean isSuccess, List<String> recipients, List<String> friendEmails, String count) {
+    public FriendResponse(boolean isSuccess, List<String> recipients, List<String> friends, String count) {
         this.isSuccess = isSuccess;
         this.recipients = recipients;
-        this.friendEmails = friendEmails;
+        this.friends = friends;
         this.count = count;
     }
 
@@ -38,12 +38,12 @@ public class GenericFriendResponse {
         this.recipients = recipients;
     }
 
-    public List<String> getFriendEmails() {
-        return friendEmails;
+    public List<String> getFriends() {
+        return friends;
     }
 
-    public void setFriendEmails(List<String> friendEmails) {
-        this.friendEmails = friendEmails;
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
     }
 
     public String getCount() {

@@ -1,12 +1,12 @@
 package com.capgemini.friendmanagement.request;
 
-public class GenericEmailRequest {
+public class EmailRequest {
     private String email;
 
-    public GenericEmailRequest() {
+    public EmailRequest() {
     }
 
-    public GenericEmailRequest(String email) {
+    public EmailRequest(String email) {
         this.email = email;
     }
 
