@@ -21,7 +21,7 @@ public class FriendConnectionService {
         this.friendConnectionDao = friendConnectionDao;
     }
 
-    public FriendResponse save(List<Friend> friends) {
+    public List<FriendConnection> save(List<Friend> friends) {
         Friend friend1 = getFriendOrCreateNew(friends.get(0));
         Friend friend2 = getFriendOrCreateNew(friends.get(1));
 
@@ -29,25 +29,24 @@ public class FriendConnectionService {
         FriendConnection friendConnection2 = new FriendConnection(friend2, friend1);
 
         // save the friend connections
-        friendConnectionDao.save(Arrays.asList(friendConnection1, friendConnection2));
-
-        return new FriendResponse(true);
+        List<FriendConnection> friendConnections = new ArrayList<>();
+        friendConnectionDao.save(Arrays.asList(friendConnection1, friendConnection2)).forEach(friendConnections::add);
+        return friendConnections;
     }
 
-    public FriendResponse getFriendsList(String email) {
+    public List<String> getFriendsList(String email) {
         List<FriendConnection> friendConnections = friendConnectionDao.findByFriendEmail(email);
 
         if (friendConnections != null && !friendConnections.isEmpty()) {
-            List<String> friendList = friendConnections.stream()
+            return friendConnections.stream()
                     .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
                     .collect(Collectors.toList());
-            return new FriendResponse(true, null, friendList, friendList.size() + "");
         }
 
-        return emptyFriendResponse();
+        return null;
     }
 
-    public FriendResponse getCommonFriends(List<Friend> friends) {
+    public List<String> getCommonFriends(List<Friend> friends) {
         // TODO poor mans solution, enhance in a future commit
         Friend friend1 = getFriendOrCreateNew(friends.get(0));
         Friend friend2 = getFriendOrCreateNew(friends.get(1));
@@ -60,11 +59,7 @@ public class FriendConnectionService {
         emails.remove(friend1.getEmail());
         emails.remove(friend2.getEmail());
 
-        if (!emails.isEmpty()) {
-            return new FriendResponse(true, null, new ArrayList<>(emails), emails.size() + "");
-        }
-
-        return emptyFriendResponse();
+        return new ArrayList<>(emails);
     }
 
     private void addCommonFriendsToSet(Friend friend, Set<String> emails) {
@@ -85,28 +80,12 @@ public class FriendConnectionService {
         return searchedFriend;
     }
 
-    private FriendResponse emptyFriendResponse() {
-        return new FriendResponse(false, null, null, null);
+    public FriendConnection subscribeToFriendConnection(String friend1Email, String friend2Email) {
+        return subscribeUnsubscribe(friend1Email, friend2Email, true);
     }
 
-    public FriendResponse subscribeToFriendConnection(String friend1Email, String friend2Email) {
-        FriendConnection friendConnection = subscribeUnsubscribe(friend1Email, friend2Email, true);
-
-        if (friendConnection != null) {
-            return new FriendResponse(true);
-        }
-
-        return emptyFriendResponse();
-    }
-
-    public FriendResponse unsubscribeToFriendConnection(String friend1Email, String friend2Email) {
-        FriendConnection friendConnection = subscribeUnsubscribe(friend1Email, friend2Email, false);
-
-        if (friendConnection != null) {
-            return new FriendResponse(true);
-        }
-
-        return emptyFriendResponse();
+    public FriendConnection unsubscribeToFriendConnection(String friend1Email, String friend2Email) {
+        return subscribeUnsubscribe(friend1Email, friend2Email, false);
     }
 
     private FriendConnection subscribeUnsubscribe(String friend1Email, String friend2Email, boolean isSubscribed) {
@@ -117,24 +96,12 @@ public class FriendConnectionService {
         return friendConnectionDao.save(friendConnection);
     }
 
-    public FriendResponse blockFriendConnection(String friend1Email, String friend2Email) {
-        FriendConnection friendConnection = blockUnblock(friend1Email, friend2Email, true);
-
-        if (friendConnection != null) {
-            return new FriendResponse(true);
-        }
-
-        return emptyFriendResponse();
+    public FriendConnection blockFriendConnection(String friend1Email, String friend2Email) {
+        return blockUnblock(friend1Email, friend2Email, true);
     }
 
-    public FriendResponse unblockFriendConnection(String friend1Email, String friend2Email) {
-        FriendConnection friendConnection = blockUnblock(friend1Email, friend2Email, false);
-
-        if (friendConnection != null) {
-            return new FriendResponse(true);
-        }
-
-        return emptyFriendResponse();
+    public FriendConnection unblockFriendConnection(String friend1Email, String friend2Email) {
+        return blockUnblock(friend1Email, friend2Email, false);
     }
 
     private FriendConnection blockUnblock(String friend1Email, String friend2Email, boolean isBlocked) {

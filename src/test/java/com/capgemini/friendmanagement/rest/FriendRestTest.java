@@ -2,7 +2,6 @@ package com.capgemini.friendmanagement.rest;
 
 import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
-import com.capgemini.friendmanagement.response.FriendResponse;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Ignore;
@@ -16,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,7 +35,7 @@ public class FriendRestTest {
         ListOfFriendsRequest friendRequest = new ListOfFriendsRequest(
                 Arrays.asList(new Friend("andy@example.com"), new Friend("john@example.com")));
 
-        when(friendConnectionService.save(friendRequest.getFriends())).thenReturn(new FriendResponse(true));
+        //when(friendConnectionService.save(friendRequest.getFriends())).thenReturn(new FriendResponse(true));
 
         mockMvc.perform(post("/friend/add-connection")
         .content(objectMapper.writeValueAsString(friendRequest)))

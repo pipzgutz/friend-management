@@ -4,14 +4,18 @@ import com.capgemini.friendmanagement.request.EmailRequest;
 import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
 import com.capgemini.friendmanagement.request.SubscriptionRequest;
 import com.capgemini.friendmanagement.response.FriendResponse;
+import com.capgemini.friendmanagement.response.builder.FriendResponseBuilder;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.capgemini.friendmanagement.service.FriendService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/friend")
@@ -26,40 +30,75 @@ public class FriendRest {
 
     @PostMapping("friends-list")
     public ResponseEntity<FriendResponse> getFriendsList(@RequestBody EmailRequest emailRequest) {
-        return new ResponseEntity<>(friendConnectionService.getFriendsList(emailRequest.getEmail()), HttpStatus.OK);
+        List<String> friendList = friendConnectionService.getFriendsList(emailRequest.getEmail());
+
+        if (CollectionUtils.isNotEmpty(friendList)) {
+            return new ResponseEntity<>(FriendResponseBuilder.aFriendResponse()
+                    .withIsSuccess(true)
+                    .withFriends(friendList)
+                    .withCount(friendList.size() + "")
+                    .build(), HttpStatus.OK);
+        } else {
+            return emptyFriendResponse();
+        }
     }
 
     @PostMapping("friends-list-common")
     public ResponseEntity<FriendResponse> getCommonFriendsList(@RequestBody ListOfFriendsRequest friendsRequest) {
-        return new ResponseEntity<>(friendConnectionService.getCommonFriends(friendsRequest.getFriends()), HttpStatus.OK);
+        List<String> commonFriends = friendConnectionService.getCommonFriends(friendsRequest.getFriends());
+
+        if (CollectionUtils.isNotEmpty(commonFriends)) {
+            return new ResponseEntity<>(FriendResponseBuilder.aFriendResponse()
+                    .withIsSuccess(true)
+                    .withFriends(commonFriends)
+                    .withCount(commonFriends.size() + "")
+                    .build(), HttpStatus.OK);
+        } else {
+            return emptyFriendResponse();
+        }
     }
 
     @PostMapping("add-connection")
     public ResponseEntity<FriendResponse> addConnection(@RequestBody ListOfFriendsRequest friendRequest) {
-        return new ResponseEntity<>(friendConnectionService.save(friendRequest.getFriends()), HttpStatus.OK);
+        friendConnectionService.save(friendRequest.getFriends());
+        return okResponse();
     }
 
     @PostMapping("subscribe")
     public ResponseEntity<FriendResponse> subscribe(@RequestBody SubscriptionRequest subscriptionRequest) {
-        return new ResponseEntity<>(friendConnectionService.subscribeToFriendConnection(
-                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
+        friendConnectionService.subscribeToFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget());
+        return okResponse();
     }
 
     @PostMapping("unsubscribe")
     public ResponseEntity<FriendResponse> unsubscribe(@RequestBody SubscriptionRequest subscriptionRequest) {
-        return new ResponseEntity<>(friendConnectionService.unsubscribeToFriendConnection(
-                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
+        friendConnectionService.unsubscribeToFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget());
+        return okResponse();
     }
 
     @PostMapping("block")
     public ResponseEntity<FriendResponse> block(@RequestBody SubscriptionRequest subscriptionRequest) {
-        return new ResponseEntity<>(friendConnectionService.blockFriendConnection(
-                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
+        friendConnectionService.blockFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget());
+        return okResponse();
     }
 
     @PostMapping("unblock")
     public ResponseEntity<FriendResponse> unblock(@RequestBody SubscriptionRequest subscriptionRequest) {
-        return new ResponseEntity<>(friendConnectionService.unblockFriendConnection(
-                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget()), HttpStatus.OK);
+        friendConnectionService.unblockFriendConnection(
+                subscriptionRequest.getRequestor(), subscriptionRequest.getTarget());
+        return okResponse();
+    }
+
+    private ResponseEntity<FriendResponse> okResponse() {
+        return new ResponseEntity<>(new FriendResponse(true), HttpStatus.OK);
+    }
+
+    private ResponseEntity<FriendResponse> emptyFriendResponse() {
+        return new ResponseEntity<>(
+                new FriendResponse(false, null, null, null),
+                HttpStatus.OK);
     }
 }

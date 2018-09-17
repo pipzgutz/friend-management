@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -62,9 +61,11 @@ public class FriendConnectionServiceTest {
         List<FriendConnection> friendConnections = Arrays.asList(friendConnection1, friendConnection2);
         when(friendConnectionDao.save(friendConnections)).thenReturn(friendConnections);
 
-        FriendResponse response = friendConnectionService.save(friends);
+        List<FriendConnection> returnedFriendConnections = friendConnectionService.save(friends);
 
-        assertThat(response.isSuccess()).isTrue();
+        assertThat(returnedFriendConnections).isNotNull();
+        assertThat(returnedFriendConnections.size()).isEqualTo(2);
+        assertThat(returnedFriendConnections).isEqualTo(friendConnections);
     }
 
     @Test
@@ -73,28 +74,20 @@ public class FriendConnectionServiceTest {
 
         when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections);
 
-        FriendResponse friendResponse = friendConnectionService.getFriendsList(friend1Email);
+        List<String> friendsList = friendConnectionService.getFriendsList(friend1Email);
 
-        List<String> friendConnectedToEmails = friendConnections.stream()
-                .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
-                .collect(Collectors.toList());
-
-        assertThat(friendResponse).isNotNull();
-        assertThat(friendResponse.isSuccess()).isTrue();
-        assertThat(friendResponse.getFriends()).isEqualTo(friendConnectedToEmails);
-        assertThat(friendResponse.getCount()).isEqualTo("1");
+        assertThat(friendsList).isNotNull();
+        assertThat(friendsList.size()).isEqualTo(1);
     }
 
     @Test
     public void getFriendsList_Email_NullOrNotExists() {
         when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(null);
 
-        FriendResponse friendResponse = friendConnectionService.getFriendsList(friend1Email);
+        List<String> friendsList = friendConnectionService.getFriendsList(friend1Email);
 
-        assertThat(friendResponse).isNotNull();
-        assertThat(friendResponse.isSuccess()).isFalse();
-        assertThat(friendResponse.getFriends()).isEqualTo(null);
-        assertThat(friendResponse.getCount()).isEqualTo(null);
+        assertThat(friendsList).isNull();
+        assertThat(friendsList).isEqualTo(null);
     }
 
     @Test
@@ -116,12 +109,11 @@ public class FriendConnectionServiceTest {
                 friendConnection2_3, friendConnection2_4);
         when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections2);
 
-        FriendResponse friendResponse = friendConnectionService.getCommonFriends(Arrays.asList(friend1, friend2));
+        List<String> commonFriends = friendConnectionService.getCommonFriends(Arrays.asList(friend1, friend2));
 
-        assertThat(friendResponse).isNotNull();
-        assertThat(friendResponse.isSuccess()).isTrue();
-        assertThat(friendResponse.getFriends()).contains(friend3.getEmail(), friend4.getEmail());
-        assertThat(friendResponse.getCount()).isEqualTo("2");
+        assertThat(commonFriends).isNotNull();
+        assertThat(commonFriends.size()).isEqualTo(2);
+        assertThat(commonFriends).contains(friend3.getEmail(), friend4.getEmail());
     }
 
     @Test
@@ -135,9 +127,10 @@ public class FriendConnectionServiceTest {
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
 
-        FriendResponse friendResponse = friendConnectionService.subscribeToFriendConnection(friend1Email, friend2Email);
+        FriendConnection friendConnection = friendConnectionService.subscribeToFriendConnection(friend1Email, friend2Email);
 
-        assertThat(friendResponse.isSuccess()).isTrue();
+        assertThat(friendConnection).isNotNull();
+        assertThat(friendConnection.isSubscribed()).isTrue();
     }
 
     @Test
@@ -152,9 +145,10 @@ public class FriendConnectionServiceTest {
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1UnSubscribed);
 
-        FriendResponse friendResponse = friendConnectionService.unsubscribeToFriendConnection(friend1Email, friend2Email);
+        FriendConnection friendConnection = friendConnectionService.unsubscribeToFriendConnection(friend1Email, friend2Email);
 
-        assertThat(friendResponse.isSuccess()).isTrue();
+        assertThat(friendConnection).isNotNull();
+        assertThat(friendConnection.isSubscribed()).isFalse();
     }
 
     @Test
@@ -168,9 +162,10 @@ public class FriendConnectionServiceTest {
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
 
-        FriendResponse friendResponse = friendConnectionService.blockFriendConnection(friend1Email, friend2Email);
+        FriendConnection friendConnection = friendConnectionService.blockFriendConnection(friend1Email, friend2Email);
 
-        assertThat(friendResponse.isSuccess()).isTrue();
+        assertThat(friendConnection).isNotNull();
+        assertThat(friendConnection.isBlocked()).isTrue();
     }
 
     @Test
@@ -184,8 +179,9 @@ public class FriendConnectionServiceTest {
         when(friendConnectionDao.findByFriendAndOtherFriendEmail(friend1Email, friend2Email)).thenReturn(friendConnection1);
         when(friendConnectionDao.save(friendConnection1)).thenReturn(friendConnection1Subscribed);
 
-        FriendResponse friendResponse = friendConnectionService.unblockFriendConnection(friend1Email, friend2Email);
+        FriendConnection friendConnection = friendConnectionService.unblockFriendConnection(friend1Email, friend2Email);
 
-        assertThat(friendResponse.isSuccess()).isTrue();
+        assertThat(friendConnection).isNotNull();
+        assertThat(friendConnection.isBlocked()).isFalse();
     }
 }
