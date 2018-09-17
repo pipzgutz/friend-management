@@ -35,4 +35,15 @@ public class FriendServiceTest {
         assertThat(searchFriend).isNotNull();
         assertThat(searchFriend.getEmail()).isEqualTo(email);
     }
+
+    @Test
+    public void findByEmail_NotExists() {
+        String email = "andy@example.com";
+
+        when(friendDao.findByEmail(email)).thenReturn(null);
+
+        Friend searchFriend = friendService.findByEmail(email);
+
+        assertThat(searchFriend).isNull();
+    }
 }

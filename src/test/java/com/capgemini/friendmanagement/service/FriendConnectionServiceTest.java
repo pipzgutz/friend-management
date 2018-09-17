@@ -39,15 +39,18 @@ public class FriendConnectionServiceTest {
     private Friend friend2;
     private FriendConnection friendConnection1;
     private FriendConnection friendConnection2;
+    private GenericEmailRequest emailRequest;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // create the friends
         friend1 = new Friend("andy@example.com");
         friend2 = new Friend("john@example.com");
 
         friendConnection1 = new FriendConnection(friend1, friend2);
         friendConnection2 = new FriendConnection(friend2, friend1);
+
+        emailRequest = new GenericEmailRequest(friend1.getEmail());
     }
 
     @Test
@@ -66,7 +69,6 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void findByFriendEmail() {
-        GenericEmailRequest emailRequest = new GenericEmailRequest(friend1.getEmail());
         List<FriendConnection> friendConnections = Collections.singletonList(new FriendConnection(friend1, friend2));
 
         when(friendConnectionDao.findByFriendEmail(emailRequest.getEmail())).thenReturn(friendConnections);
@@ -81,5 +83,17 @@ public class FriendConnectionServiceTest {
         assertThat(friendResponse.isSuccess()).isTrue();
         assertThat(friendResponse.getFriendEmails()).isEqualTo(friendConnectedToEmails);
         assertThat(friendResponse.getCount()).isEqualTo("1");
+    }
+
+    @Test
+    public void findByFriendEmail_Not_Exists() {
+        when(friendConnectionDao.findByFriendEmail(emailRequest.getEmail())).thenReturn(null);
+
+        GenericFriendResponse friendResponse = friendConnectionService.getFriendsList(emailRequest);
+
+        assertThat(friendResponse).isNotNull();
+        assertThat(friendResponse.isSuccess()).isFalse();
+        assertThat(friendResponse.getFriendEmails()).isEqualTo(null);
+        assertThat(friendResponse.getCount()).isEqualTo(null);
     }
 }
