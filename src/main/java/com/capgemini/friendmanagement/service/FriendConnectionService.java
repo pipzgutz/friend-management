@@ -3,12 +3,10 @@ package com.capgemini.friendmanagement.service;
 import com.capgemini.friendmanagement.dao.FriendConnectionDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.entity.FriendConnection;
-import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
 import com.capgemini.friendmanagement.response.FriendResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,8 +20,8 @@ public class FriendConnectionService {
     }
 
     public FriendResponse save(List<Friend> friends) {
-        Friend friend1 = friends.get(0);
-        Friend friend2 = friends.get(1);
+        Friend friend1 = getFriendOrCreateNew(friends.get(0));
+        Friend friend2 = getFriendOrCreateNew(friends.get(1));
 
         FriendConnection friendConnection1 = new FriendConnection(friend1, friend2);
         FriendConnection friendConnection2 = new FriendConnection(friend2, friend1);
@@ -42,8 +40,50 @@ public class FriendConnectionService {
                     .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
                     .collect(Collectors.toList());
             return new FriendResponse(true, null, friendList, friendList.size() + "");
-        } else {
-            return new FriendResponse(false, null, null, null);
         }
+
+        return emptyFriendResponse();
+    }
+
+    public FriendResponse getCommonFriends(List<Friend> friends) {
+        // TODO poor mans solution, enhance in a future commit
+        Friend friend1 = getFriendOrCreateNew(friends.get(0));
+        Friend friend2 = getFriendOrCreateNew(friends.get(1));
+
+        Set<String> emails = new HashSet<>();
+
+        addCommonFriendsToSet(friend1, emails);
+        addCommonFriendsToSet(friend2, emails);
+
+        emails.remove(friend1.getEmail());
+        emails.remove(friend2.getEmail());
+
+        if (!emails.isEmpty()) {
+            return new FriendResponse(true, null, new ArrayList<>(emails), emails.size() + "");
+        }
+
+        return emptyFriendResponse();
+    }
+
+    private void addCommonFriendsToSet(Friend friend, Set<String> emails) {
+        List<FriendConnection> friendConnections1 = friendConnectionDao.findByFriendEmail(friend.getEmail());
+        emails.addAll(friendConnections1.stream()
+                .map(friendConnection -> friendConnection.getFriendConnectedTo().getEmail())
+                .collect(Collectors.toSet()));
+    }
+
+    private Friend getFriendOrCreateNew(Friend friend) {
+        Friend searchedFriend = friendService.findByEmail(friend.getEmail());
+
+        if (searchedFriend == null) {
+            friendService.save(friend);
+            return friend;
+        }
+
+        return searchedFriend;
+    }
+
+    private FriendResponse emptyFriendResponse() {
+        return new FriendResponse(false, null, null, null);
     }
 }

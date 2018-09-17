@@ -25,6 +25,11 @@ public class FriendRest {
         return new ResponseEntity<>(friendConnectionService.getFriendsList(emailRequest.getEmail()), HttpStatus.OK);
     }
 
+    @PostMapping("friends-list-common")
+    public ResponseEntity<FriendResponse> getCommonFriendsList(@RequestBody ListOfFriendsRequest friendsRequest) {
+        return new ResponseEntity<>(friendConnectionService.getCommonFriends(friendsRequest.getFriends()), HttpStatus.OK);
+    }
+
     @PutMapping("add-connection")
     public ResponseEntity<FriendResponse> addConnection(@RequestBody ListOfFriendsRequest friendRequest) {
         return new ResponseEntity<>(friendConnectionService.save(friendRequest.getFriends()), HttpStatus.OK);

@@ -3,6 +3,7 @@ package com.capgemini.friendmanagement.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "friend_connection")
@@ -71,5 +72,21 @@ public class FriendConnection implements Serializable {
 
     public void setSubscribed(boolean subscribed) {
         isSubscribed = subscribed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FriendConnection that = (FriendConnection) o;
+        return isSubscribed == that.isSubscribed &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(friend, that.friend) &&
+                Objects.equals(friendConnectedTo, that.friendConnectedTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, friend, friendConnectedTo, isSubscribed);
     }
 }

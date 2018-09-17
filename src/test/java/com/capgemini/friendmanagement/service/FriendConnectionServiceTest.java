@@ -55,7 +55,7 @@ public class FriendConnectionServiceTest {
     public void save() {
         List<Friend> friends = Arrays.asList(friend1, friend2);
 
-        doNothing().when(friendService).saveAll(friends);
+        when(friendService.saveAll(friends)).thenReturn(friends);
 
         List<FriendConnection> friendConnections = Arrays.asList(friendConnection1, friendConnection2);
         when(friendConnectionDao.save(friendConnections)).thenReturn(friendConnections);
@@ -66,7 +66,7 @@ public class FriendConnectionServiceTest {
     }
 
     @Test
-    public void findByFriendEmail() {
+    public void getFriendsList() {
         List<FriendConnection> friendConnections = Collections.singletonList(new FriendConnection(friend1, friend2));
 
         when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections);
@@ -84,7 +84,7 @@ public class FriendConnectionServiceTest {
     }
 
     @Test
-    public void findByFriendEmail_Not_Exists() {
+    public void getFriendsList_Email_Null() {
         when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(null);
 
         FriendResponse friendResponse = friendConnectionService.getFriendsList(friend1Email);
@@ -93,5 +93,32 @@ public class FriendConnectionServiceTest {
         assertThat(friendResponse.isSuccess()).isFalse();
         assertThat(friendResponse.getFriends()).isEqualTo(null);
         assertThat(friendResponse.getCount()).isEqualTo(null);
+    }
+
+    @Test
+    public void getCommonFriends() {
+        Friend friend3 = new Friend("james@example.com");
+        Friend friend4 = new Friend("jessy@example.com");
+
+        FriendConnection friendConnection1_3 = new FriendConnection(friend1, friend3);
+        FriendConnection friendConnection1_4 = new FriendConnection(friend1, friend4);
+
+        FriendConnection friendConnection2_3 = new FriendConnection(friend2, friend3);
+        FriendConnection friendConnection2_4 = new FriendConnection(friend2, friend4);
+
+        List<FriendConnection> friendConnections1 = Arrays.asList(friendConnection1, friendConnection2,
+                friendConnection1_3, friendConnection1_4);
+        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections1);
+
+        List<FriendConnection> friendConnections2 = Arrays.asList(friendConnection1, friendConnection2,
+                friendConnection2_3, friendConnection2_4);
+        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnections2);
+
+        FriendResponse friendResponse = friendConnectionService.getCommonFriends(Arrays.asList(friend1, friend2));
+
+        assertThat(friendResponse).isNotNull();
+        assertThat(friendResponse.isSuccess()).isTrue();
+        assertThat(friendResponse.getFriends()).contains(friend3.getEmail(), friend4.getEmail());
+        assertThat(friendResponse.getCount()).isEqualTo("2");
     }
 }

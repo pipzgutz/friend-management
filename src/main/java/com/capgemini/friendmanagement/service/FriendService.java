@@ -4,6 +4,7 @@ import com.capgemini.friendmanagement.dao.FriendDao;
 import com.capgemini.friendmanagement.entity.Friend;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,12 +15,16 @@ public class FriendService {
         this.friendDao = friendDao;
     }
 
-    public void saveAll(List<Friend> friends) {
-        friendDao.save(friends);
+    public Friend save(Friend friend) {
+        return friendDao.save(friend);
     }
 
-    public void save(Friend friend) {
-        friendDao.save(friend);
+    public List<Friend> saveAll(List<Friend> friends) {
+        List<Friend> toReturn = new ArrayList<>();
+
+        friendDao.save(friends).forEach(toReturn::add);
+
+        return toReturn;
     }
 
     public Friend findByEmail(String email) {
