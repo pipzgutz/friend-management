@@ -24,9 +24,14 @@ To run execute the following command:
 ./mvnw spring-boot:run
 ```
 
-To run the project in production mode, execute the following command:
+To run the project in production mode (PostgreSQL), execute the following command:
 ```
 ./mvnw spring-boot:run -Dspring.profiles.active=prod
+```
+
+To run the project in production mode (MySQL), execute the following command:
+```
+./mvnw spring-boot:run -Dspring.profiles.active=prod-mysql
 ```
 
 # Production
@@ -47,6 +52,11 @@ docker build -t friend-management .
 ### Run the project (using docker-compose)
 ```
 docker-compose -f src/main/docker/app.yml up -d
+```
+
+### Run the project (using docker-compose and MySQL)
+```
+docker-compose -f src/main/docker/app-mysql.yml up -d
 ```
 
 # Accessing Swagger UI

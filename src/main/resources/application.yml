@@ -7,6 +7,5 @@ spring:
     url: jdbc:h2:file:~/FriendManagement
     username: sa
     password:
-    driver-class-name: org.h2.Driver
   jackson:
     default-property-inclusion: non_null

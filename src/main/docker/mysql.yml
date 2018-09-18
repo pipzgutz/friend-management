@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  friendmanagement-mysql:
+    image: mysql
+    ports:
+    - "3306:3306"
+#    volumes:
+#    - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "FriendManagement"
+      MYSQL_ROOT_PASSWORD: "password"
+
+#volumes:
+#  mysql_data:
