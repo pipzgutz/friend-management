@@ -8,8 +8,8 @@ This is an API where you can manage friends, add, remove, block, etc.
 * Swagger
 
 # Databases
-* development - h2 (embedded)
-* production - PostgreSQL
+* dev - h2 (embedded)
+* prod - PostgreSQL
 
 # Development
 Open the project with your preferred IDE
@@ -22,6 +22,11 @@ To build execute the following command:
 To run execute the following command:
 ```
 ./mvnw spring-boot:run
+```
+
+To run the project in production mode, execute the following command:
+```
+./mvnw spring-boot:run -Dspring.profiles.active=prod
 ```
 
 # Production
@@ -41,7 +46,7 @@ docker build -t friend-management .
 
 ### Run the project (using docker-compose)
 ```
-docker-compose -f src/main/docker/docker-compose.yml up -d
+docker-compose -f src/main/docker/app.yml up -d
 ```
 
 # Accessing Swagger UI

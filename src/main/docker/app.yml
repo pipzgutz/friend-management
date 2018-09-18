@@ -1,0 +1,16 @@
+version: '2'
+services:
+  friendmanagement:
+    container_name: friend-management
+    image: friend-management
+    depends_on:
+      - friendmanagement-postgresql
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://friendmanagement-postgresql:5432/FriendManagement
+    ports:
+      - 8080:8080
+  friendmanagement-postgresql:
+    extends:
+      file: postgresql.yml
+      service: friendmanagement-postgresql
