@@ -9,7 +9,7 @@ This is an API where you can manage friends, add, remove, block, etc.
 
 # Databases
 * dev - h2 (embedded)
-* prod - PostgreSQL
+* prod - MySQL
 
 # Development
 Open the project with your preferred IDE
@@ -24,14 +24,9 @@ To run execute the following command:
 ./mvnw spring-boot:run
 ```
 
-To run the project in production mode (PostgreSQL), execute the following command:
+To run the project in production mode, execute the following command:
 ```
 ./mvnw spring-boot:run -Dspring.profiles.active=prod
-```
-
-To run the project in production mode (MySQL), execute the following command:
-```
-./mvnw spring-boot:run -Dspring.profiles.active=prod-mysql
 ```
 
 # Production

@@ -4,13 +4,13 @@ services:
     container_name: friend-management
     image: friend-management
     depends_on:
-      - friendmanagement-postgresql
+      - friendmanagement-mysql
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://friendmanagement-postgresql:5432/FriendManagement
+      - SPRING_PROFILES_ACTIVE=prod-mysql
+      - SPRING_DATASOURCE_URL=jdbc:mysql://friendmanagement-mysql:3306/FriendManagement
     ports:
       - 8080:8080
-  friendmanagement-postgresql:
+  friendmanagement-mysql:
     extends:
-      file: postgresql.yml
-      service: friendmanagement-postgresql
+      file: mysql.yml
+      service: friendmanagement-mysql
