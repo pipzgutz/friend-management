@@ -1,6 +1,5 @@
 package com.capgemini.friendmanagement.rest;
 
-import com.capgemini.friendmanagement.entity.Friend;
 import com.capgemini.friendmanagement.request.ListOfFriendsRequest;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;

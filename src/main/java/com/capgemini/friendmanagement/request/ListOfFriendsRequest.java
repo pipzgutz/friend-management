@@ -1,7 +1,5 @@
 package com.capgemini.friendmanagement.request;
 
-import com.capgemini.friendmanagement.entity.Friend;
-
 import java.util.List;
 
 public class ListOfFriendsRequest {
