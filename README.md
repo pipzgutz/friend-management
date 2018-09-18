@@ -30,12 +30,10 @@ To run the project in production mode, execute the following command:
 ```
 
 # Production
+This is already deployed to Cloud Foundry, deployed database is still h2 to save cost
 
-## Pivotal Cloud Foundry
-Continuously deliver any app to every major private and public cloud with a single platform
-
-## Deployment to Pivotal Cloud Foundry
-TODO
+# Accessing Swagger UI
+Open [https://friend-management.cfapps.io/swagger-ui.html](https://friend-management.cfapps.io/swagger-ui.html) to access the Swagger UI
 
 ## Deployment to Docker
 
@@ -48,14 +46,6 @@ docker build -t friend-management .
 ```
 docker-compose -f src/main/docker/app.yml up -d
 ```
-
-### Run the project (using docker-compose and MySQL)
-```
-docker-compose -f src/main/docker/app-mysql.yml up -d
-```
-
-# Accessing Swagger UI
-Open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) to access the Swagger UI
 
 # Rest Endpoints
 
