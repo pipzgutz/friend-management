@@ -110,19 +110,37 @@ public class FriendConnectionService {
     }
 
     public List<String> findAllEmailsWithUpdatesByEmail(String email, String text) {
-        List<String> emailsWithUpdates = new ArrayList<>();
+        Set<String> emailsWithUpdates = new HashSet<>();
 
-        // find all friend connections of email
-        List<FriendConnection> friendEmailNotBlocked = friendConnectionDao.findByFriendEmailNotBlocked(email);
+        // find all friend connections that do not block the email provided
+        List<FriendConnection> friendEmailNotBlocked = friendConnectionDao.findByFriendConnectionEmailNotBlocked(email);
 
-        // if has friend connections not blocked updates from email
         if (CollectionUtils.isNotEmpty(friendEmailNotBlocked)) {
             friendEmailNotBlocked.forEach(friendConnection -> {
-                Set<String> friendConnections = getFriendConnections(friendConnection.getFriend().getEmail());
+                List<FriendConnection> friendConnections =
+                        friendConnectionDao.findByFriendEmail(friendConnection.getFriend().getEmail());
 
+                friendConnections.forEach(fc -> {
+                    String friendEmail = fc.getFriend().getEmail();
+                    String fcEmail = fc.getFriendConnectedTo().getEmail();
+
+                    // add if a friend is connected to the email provided
+                    if (fcEmail.equals(email)) {
+                        emailsWithUpdates.add(friendEmail);
+                    }
+
+                    // add if subscribed to the updates of email provided
+                    if (fc.isSubscribed()) {
+                        emailsWithUpdates.add(friendEmail);
+                    }
+
+                    if (text.contains(friendEmail)) {
+                        emailsWithUpdates.add(friendEmail);
+                    }
+                });
             });
         }
 
-        return emailsWithUpdates;
+        return new ArrayList<>(emailsWithUpdates);
     }
 }

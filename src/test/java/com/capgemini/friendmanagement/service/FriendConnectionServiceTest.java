@@ -185,6 +185,15 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void findAllEmailsWithUpdatesByEmail() {
+        String text = "Hello World! john@example.com";
+        List<FriendConnection> friendConnectionList = Collections.singletonList(friendConnection2);
 
+        when(friendConnectionDao.findByFriendConnectionEmailNotBlocked(friend1Email))
+                .thenReturn(friendConnectionList);
+        when(friendConnectionDao.findByFriendEmail(friend1Email)).thenReturn(friendConnectionList);
+
+        List<String> allEmailsWithUpdatesByEmail = friendConnectionService.findAllEmailsWithUpdatesByEmail(friend1Email, text);
+
+        assertThat(allEmailsWithUpdatesByEmail).isNotNull();
     }
 }
