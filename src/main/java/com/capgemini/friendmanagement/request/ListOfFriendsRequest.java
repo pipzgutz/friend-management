@@ -5,20 +5,20 @@ import com.capgemini.friendmanagement.entity.Friend;
 import java.util.List;
 
 public class ListOfFriendsRequest {
-    private List<Friend> friends;
+    private List<String> friends;
 
     public ListOfFriendsRequest() {
     }
 
-    public ListOfFriendsRequest(List<Friend> friends) {
+    public ListOfFriendsRequest(List<String> friends) {
         this.friends = friends;
     }
 
-    public List<Friend> getFriends() {
+    public List<String> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<Friend> friends) {
+    public void setFriends(List<String> friends) {
         this.friends = friends;
     }
 }

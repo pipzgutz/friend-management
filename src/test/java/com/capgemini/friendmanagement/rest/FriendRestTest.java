@@ -33,7 +33,7 @@ public class FriendRestTest {
     @Ignore
     public void addConnection() throws Exception {
         ListOfFriendsRequest friendRequest = new ListOfFriendsRequest(
-                Arrays.asList(new Friend("andy@example.com"), new Friend("john@example.com")));
+                Arrays.asList("andy@example.com","john@example.com"));
 
         //when(friendConnectionService.save(friendRequest.getFriends())).thenReturn(new FriendResponse(true));
 

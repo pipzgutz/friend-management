@@ -8,6 +8,7 @@ import com.capgemini.friendmanagement.response.FriendResponse;
 import com.capgemini.friendmanagement.response.builder.FriendResponseBuilder;
 import com.capgemini.friendmanagement.service.FriendConnectionService;
 import com.capgemini.friendmanagement.service.FriendService;
+import com.capgemini.friendmanagement.util.FriendManagerUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,14 @@ import java.util.List;
 public class FriendRest {
     private final FriendService friendService;
     private final FriendConnectionService friendConnectionService;
+    private final FriendManagerUtil friendManagerUtil;
 
-    public FriendRest(FriendService friendService, FriendConnectionService friendConnectionService) {
+    public FriendRest(FriendService friendService,
+                      FriendConnectionService friendConnectionService,
+                      FriendManagerUtil friendManagerUtil) {
         this.friendService = friendService;
         this.friendConnectionService = friendConnectionService;
+        this.friendManagerUtil = friendManagerUtil;
     }
 
     @PostMapping("friends-list")
@@ -46,7 +51,8 @@ public class FriendRest {
 
     @PostMapping("friends-list-common")
     public ResponseEntity<FriendResponse> getCommonFriendsList(@RequestBody ListOfFriendsRequest friendsRequest) {
-        List<String> commonFriends = friendConnectionService.getCommonFriends(friendsRequest.getFriends());
+        List<String> commonFriends = friendConnectionService.getCommonFriends(
+                friendManagerUtil.emailsToFriends(friendsRequest.getFriends()));
 
         if (CollectionUtils.isNotEmpty(commonFriends)) {
             return new ResponseEntity<>(FriendResponseBuilder.aFriendResponse()
@@ -61,7 +67,7 @@ public class FriendRest {
 
     @PostMapping("add-connection")
     public ResponseEntity<FriendResponse> addConnection(@RequestBody ListOfFriendsRequest friendRequest) {
-        friendConnectionService.save(friendRequest.getFriends());
+        friendConnectionService.save(friendManagerUtil.emailsToFriends(friendRequest.getFriends()));
         return okResponse();
     }
 
