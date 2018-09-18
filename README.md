@@ -33,7 +33,16 @@ Continuously deliver any app to every major private and public cloud with a sing
 TODO
 
 ## Deployment to Docker
-TODO
+
+### Build the project
+```
+docker build -t friend-management .
+```
+
+### Run the project (using docker-compose)
+```
+docker-compose -f src/main/docker/docker-compose.yml up -d
+```
 
 # Accessing Swagger UI
 Open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) to access the Swagger UI
